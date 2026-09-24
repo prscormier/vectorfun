@@ -172,7 +172,15 @@ function drawArrow(startVector, endVector, color, label, lineWidth, dashed) {
   ctx.closePath(); ctx.fill();
   ctx.beginPath(); ctx.arc(end.x, end.y, 8, 0, Math.PI * 2); ctx.fill();
   ctx.font = "800 13px Inter, sans-serif";
-  ctx.fillText(label, end.x + 11, end.y - 11);
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  const labelOffset = 14;
+  const midpoint = { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 };
+  ctx.fillText(
+    label,
+    midpoint.x + labelOffset * Math.sin(theta),
+    midpoint.y - labelOffset * Math.cos(theta),
+  );
   ctx.restore();
 }
 
