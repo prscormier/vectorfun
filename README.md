@@ -4,7 +4,7 @@ Vector Fun is a focused first prototype for interactively exploring vectors in t
 
 ## Prototype features
 
-- Two editable vectors on a labeled Cartesian grid
+- Two editable vectors drawn tip-to-tail on a labeled Cartesian grid
 - Drag either vector's arrowhead to change it visually
 - Edit x/y components or magnitude/direction numerically
 - Live resultant vector for **A + B**

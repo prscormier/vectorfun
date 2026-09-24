@@ -91,12 +91,12 @@ function draw() {
   ctx.clearRect(0, 0, view.width, view.height);
   drawGrid();
   if (state.showComponents) {
-    drawComponents(state.vectors.a, COLORS.a);
-    drawComponents(state.vectors.b, COLORS.b);
+    drawComponents({ x: 0, y: 0 }, state.vectors.a, COLORS.a);
+    drawComponents(state.vectors.a, add(state.vectors.a, state.vectors.b), COLORS.b);
   }
-  drawArrow(add(state.vectors.a, state.vectors.b), COLORS.r, "A + B", 5, true);
-  drawArrow(state.vectors.a, COLORS.a, "A", 4, false);
-  drawArrow(state.vectors.b, COLORS.b, "B", 4, false);
+  drawArrow({ x: 0, y: 0 }, add(state.vectors.a, state.vectors.b), COLORS.r, "A + B", 5, true);
+  drawArrow({ x: 0, y: 0 }, state.vectors.a, COLORS.a, "A", 4, false);
+  drawArrow(state.vectors.a, add(state.vectors.a, state.vectors.b), COLORS.b, "B", 4, false);
   drawOrigin();
 }
 
@@ -136,24 +136,25 @@ function fromCanvas(point) {
   return { x: (point.x - view.originX) / view.scale, y: (view.originY - point.y) / view.scale };
 }
 
-function drawComponents(vector, color) {
-  const end = toCanvas(vector);
+function drawComponents(startVector, endVector, color) {
+  const start = toCanvas(startVector);
+  const end = toCanvas(endVector);
   ctx.save();
   ctx.strokeStyle = color;
   ctx.globalAlpha = 0.32;
   ctx.lineWidth = 1.5;
   ctx.setLineDash([5, 5]);
   ctx.beginPath();
-  ctx.moveTo(view.originX, view.originY);
-  ctx.lineTo(end.x, view.originY);
+  ctx.moveTo(start.x, start.y);
+  ctx.lineTo(end.x, start.y);
   ctx.lineTo(end.x, end.y);
   ctx.stroke();
   ctx.restore();
 }
 
-function drawArrow(vector, color, label, lineWidth, dashed) {
-  const start = { x: view.originX, y: view.originY };
-  const end = toCanvas(vector);
+function drawArrow(startVector, endVector, color, label, lineWidth, dashed) {
+  const start = toCanvas(startVector);
+  const end = toCanvas(endVector);
   const theta = Math.atan2(end.y - start.y, end.x - start.x);
   const head = 13;
   ctx.save();
@@ -187,8 +188,9 @@ function pointerPosition(event) {
 
 canvas.addEventListener("pointerdown", (event) => {
   const point = pointerPosition(event);
+  const arrowTips = { a: state.vectors.a, b: add(state.vectors.a, state.vectors.b) };
   const nearest = ["a", "b"]
-    .map((key) => ({ key, distance: Math.hypot(point.x - toCanvas(state.vectors[key]).x, point.y - toCanvas(state.vectors[key]).y) }))
+    .map((key) => ({ key, distance: Math.hypot(point.x - toCanvas(arrowTips[key]).x, point.y - toCanvas(arrowTips[key]).y) }))
     .sort((left, right) => left.distance - right.distance)[0];
   if (nearest.distance <= 22) {
     state.dragging = nearest.key;
@@ -200,7 +202,10 @@ canvas.addEventListener("pointerdown", (event) => {
 canvas.addEventListener("pointermove", (event) => {
   if (!state.dragging) return;
   const next = fromCanvas(pointerPosition(event));
-  state.vectors[state.dragging] = { x: Math.round(next.x * 10) / 10, y: Math.round(next.y * 10) / 10 };
+  const vector = state.dragging === "b"
+    ? { x: next.x - state.vectors.a.x, y: next.y - state.vectors.a.y }
+    : next;
+  state.vectors[state.dragging] = { x: Math.round(vector.x * 10) / 10, y: Math.round(vector.y * 10) / 10 };
   update();
 });
 
