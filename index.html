@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="An interactive 2D vector visualizer for exploring components, magnitude, direction, and vector addition."
+    />
+    <title>Vector Fun</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Interactive 2D vector lab</p>
+          <h1>Vector Fun</h1>
+          <p class="subtitle">Drag an arrowhead or enter values to see how vectors add.</p>
+        </div>
+        <button id="reset-button" class="secondary-button" type="button">Reset example</button>
+      </header>
+
+      <section class="workspace" aria-label="Vector visualization workspace">
+        <div class="canvas-card">
+          <div class="canvas-toolbar">
+            <p><strong>Tip:</strong> drag either arrowhead</p>
+            <label class="toggle">
+              <input id="components-toggle" type="checkbox" checked />
+              <span>Show components</span>
+            </label>
+          </div>
+          <canvas id="vector-canvas" aria-label="Coordinate plane showing vectors A, B, and their resultant">
+            Your browser does not support the canvas element.
+          </canvas>
+          <div class="legend" aria-label="Vector legend">
+            <span><i class="swatch swatch-a"></i>Vector A</span>
+            <span><i class="swatch swatch-b"></i>Vector B</span>
+            <span><i class="swatch swatch-r"></i>Resultant A + B</span>
+          </div>
+        </div>
+
+        <aside class="control-panel" aria-label="Vector controls">
+          <div id="vector-controls"></div>
+
+          <section class="result-card" aria-live="polite">
+            <div class="result-heading">
+              <div>
+                <p class="eyebrow">Vector sum</p>
+                <h2>A + B</h2>
+              </div>
+              <span class="result-symbol">R</span>
+            </div>
+            <dl class="result-grid">
+              <div><dt>x component</dt><dd id="result-x"></dd></div>
+              <div><dt>y component</dt><dd id="result-y"></dd></div>
+              <div><dt>Magnitude</dt><dd id="result-magnitude"></dd></div>
+              <div><dt>Direction</dt><dd id="result-angle"></dd></div>
+            </dl>
+            <p id="sum-equation" class="equation"></p>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <template id="vector-card-template">
+      <section class="vector-card">
+        <div class="vector-heading">
+          <div>
+            <p class="eyebrow vector-name"></p>
+            <h2 class="vector-title"></h2>
+          </div>
+          <span class="vector-symbol"></span>
+        </div>
+        <div class="input-grid">
+          <label>x component<input class="input-x" type="number" step="0.1" /></label>
+          <label>y component<input class="input-y" type="number" step="0.1" /></label>
+          <label>Magnitude<input class="input-magnitude" type="number" min="0" step="0.1" /></label>
+          <label>Direction (°)<input class="input-angle" type="number" step="1" /></label>
+        </div>
+      </section>
+    </template>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
